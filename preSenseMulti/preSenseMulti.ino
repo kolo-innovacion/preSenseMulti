@@ -28,7 +28,12 @@ class Sensor {
 
       int pulse = pulseIn(pulPin, HIGH);
 
-      value = (pulse * 2.54) / 147;
+      value = int((pulse * 2.54) / 147);
+
+      if (value < 1) {
+        value = 0;
+      }
+
       Serial.println(value);
 
       digitalWrite(powPin, LOW);
@@ -39,6 +44,9 @@ class Sensor {
       } else {
         state = false;
       }
+    }
+    bool getState() {
+      return state;
     }
 
 };
@@ -69,6 +77,11 @@ class Gport
       pinMode(pin, OUTPUT);
       pinMode(ledPin, OUTPUT);
       setNormal();
+    }
+    void blinkOnce() {
+      digitalWrite(ledPin, HIGH);
+      delay(250);
+      digitalWrite(ledPin, LOW);
     }
     void setActive() {
       digitalWrite(pin, active);
@@ -103,4 +116,14 @@ void loop() {
   sensorA.readValue();
   sensorB.readValue();
   sensorC.readValue();
+
+  sensorA.updateState();
+  sensorB.updateState();
+  sensorC.updateState();
+
+  if (sensorA.getState() || sensorB.getState() || sensorC.getState()) {
+    gport0.setActive();
+    //gport0.blinkOnce();
+  } else {}
+
 }
