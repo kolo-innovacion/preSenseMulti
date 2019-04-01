@@ -1,5 +1,7 @@
 //INICIA CONFIGURACION
-
+int threshA = 40;
+int threshB = 40;
+int threshC = 40;
 //TERMINA CONFIGURACION
 
 class Sensor {
@@ -7,13 +9,15 @@ class Sensor {
     int pulPin;
     int value;
     int thresh;
+    bool state;
 
   public:
-    Sensor(int po, int pu) {
+    Sensor(int po, int pu, int th) {
       powPin = po;
       pulPin = pu;
+      thresh = th;
       value = 0;
-      thresh = 0;
+      state = false;
 
       pinMode(pulPin, INPUT);
       pinMode(powPin, OUTPUT);
@@ -28,6 +32,13 @@ class Sensor {
       Serial.println(value);
 
       digitalWrite(powPin, LOW);
+    }
+    void updateState() {
+      if ((value > 1) && (value < thresh)) {
+        state = true;
+      } else {
+        state = false;
+      }
     }
 
 };
@@ -77,9 +88,9 @@ class Gport
 };
 
 //sensor objects creation
-Sensor sensorA(2, 3);
-Sensor sensorB(4, 5);
-Sensor sensorC(6, 7);
+Sensor sensorA(2, 3, threshA);
+Sensor sensorB(4, 5, threshB);
+Sensor sensorC(6, 7, threshC);
 
 //BS GPIO port creation
 Gport gport0(12, 13);
