@@ -24,13 +24,13 @@ class Sensor {
       Serial.println(value);
 
       digitalWrite(powPin, LOW);
-      //delay(500);
     }
 
 };
 
 Sensor sensorA(2, 3);
 Sensor sensorB(4, 5);
+Sensor sensorC(6, 7);
 
 void setup() {
   Serial.begin(9600);
@@ -39,4 +39,5 @@ void setup() {
 void loop() {
   sensorA.readValue();
   sensorB.readValue();
+  sensorC.readValue();
 }
