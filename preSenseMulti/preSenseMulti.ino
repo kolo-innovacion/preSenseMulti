@@ -121,9 +121,6 @@ void loop() {
   sensorB.updateState();
   sensorC.updateState();
 
-  if (sensorA.getState() || sensorB.getState() || sensorC.getState()) {
-    gport0.setActive();
-    //gport0.blinkOnce();
-  } else {}
+  gport0.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
 
 }
