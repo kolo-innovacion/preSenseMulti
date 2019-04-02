@@ -107,27 +107,22 @@ int gDelay = 500;
 class Gport
 {
     int pin;
-    //int ledPin;
 
   public:
 
     void setNormal() {
       digitalWrite(pin, normal);
-      //digitalWrite(ledPin, LOW);
     }
 
     Gport(int gp) {
       pin = gp;
-      //ledPin = 13;
 
       pinMode(pin, OUTPUT);
-      //pinMode(ledPin, OUTPUT);
       setNormal();
     }
 
     void setActive() {
       digitalWrite(pin, active);
-      //digitalWrite(ledPin, HIGH);
       delay(gDelay);
     }
     void setOutput(bool input) {
@@ -159,22 +154,31 @@ void setup() {
   Serial.begin(9600);
 }
 
-void loop0() {
-  sensorA.readValue();
-  sensorB.readValue();
-  sensorC.readValue();
-
-  sensorA.updateState();
-  sensorB.updateState();
-  sensorC.updateState();
-
-  gport0.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
-
-}
 void loop() {
+  routineA();
+  routineB();
+  routineC();
+}
+void routineA() {
   potA.readValue();
   sensorA.readValue();
   sensorA.setThresh(potA.getValue());
   sensorA.updateState();
   sensorA.displayState();
+}
+//B
+void routineB() {
+  potB.readValue();
+  sensorB.readValue();
+  sensorB.setThresh(potB.getValue());
+  sensorB.updateState();
+  sensorB.displayState();
+}
+//C
+void routineC() {
+  potC.readValue();
+  sensorC.readValue();
+  sensorC.setThresh(potC.getValue());
+  sensorC.updateState();
+  sensorC.displayState();
 }
