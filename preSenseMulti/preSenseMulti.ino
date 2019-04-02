@@ -4,23 +4,44 @@ int threshB = 40;
 int threshC = 40;
 //TERMINA CONFIGURACION
 
+class Pot {
+    int volPin;
+    int value;
+
+  public:
+    Pot(int pin) {
+      volPin = pin;
+      value = 0;
+    }
+    int getValue() {
+      return value;
+    }
+    void readValue() {
+      value = analogRead(volPin);
+      //Serial.println(value);
+    }
+};
+
 class Sensor {
     int powPin;
     int pulPin;
-    int value;
+    int ledPin;
     int thresh;
+    int value;
     bool state;
 
   public:
-    Sensor(int po, int pu, int th) {
+    Sensor(int po, int pu, int le, int th) {
       powPin = po;
       pulPin = pu;
+      ledPin = le;
       thresh = th;
       value = 0;
       state = false;
 
       pinMode(pulPin, INPUT);
       pinMode(powPin, OUTPUT);
+      pinMode(ledPin, OUTPUT);
     }
 
     void readValue() {
@@ -47,6 +68,12 @@ class Sensor {
     }
     bool getState() {
       return state;
+    }
+    void blinkLed() {
+      digitalWrite(ledPin, HIGH);
+      delay(1000);
+      digitalWrite(ledPin, LOW);
+      delay(500);
     }
 
 };
@@ -101,18 +128,23 @@ class Gport
 };
 
 //sensor objects creation
-Sensor sensorA(2, 3, threshA);
-Sensor sensorB(4, 5, threshB);
-Sensor sensorC(6, 7, threshC);
+Sensor sensorA(11, 12, 13, threshA);
+Sensor sensorB(9, 10, 5, threshB);
+Sensor sensorC(7, 8, 4, threshC);
 
 //BS GPIO port creation
 Gport gport0(12, 13);
+
+//Pot objects creation
+Pot potA(0);
+Pot potB(1);
+Pot potC(2);
 
 void setup() {
   Serial.begin(9600);
 }
 
-void loop() {
+void loop0() {
   sensorA.readValue();
   sensorB.readValue();
   sensorC.readValue();
@@ -123,4 +155,14 @@ void loop() {
 
   gport0.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
 
+}
+void loop() {
+  //read 3 pot values
+  potA.readValue();
+  potB.readValue();
+  potC.readValue();
+
+  sensorA.readValue();
+
+  sensorA.updateState();
 }
