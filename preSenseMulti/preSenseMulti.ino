@@ -45,24 +45,13 @@ class Sensor {
       pinMode(ledPin, OUTPUT);
     }
 
-    //
-    //    Sensor(int po, int pu, int le, int th) {
-    //      powPin = po;
-    //      pulPin = pu;
-    //      ledPin = le;
-    //      thresh = th;
-    //      value = 0;
-    //      state = false;
-    //
-    //      pinMode(pulPin, INPUT);
-    //      pinMode(powPin, OUTPUT);
-    //      pinMode(ledPin, OUTPUT);
-    //    }
-
     void readValue() {
       digitalWrite(powPin, HIGH);
 
       int pulse = pulseIn(pulPin, HIGH);
+      //int pulse = pulseIn(pulPin, HIGH, 400000);
+
+      Serial.println(pulse);
 
       value = int((pulse * 2.54) / 147);
 
@@ -81,6 +70,14 @@ class Sensor {
         state = false;
       }
     }
+    void displayState() {
+      if (state) {
+        digitalWrite(ledPin, HIGH);
+      } else {
+        digitalWrite(ledPin, LOW);
+      }
+    }
+
     bool getState() {
       return state;
     }
@@ -175,9 +172,9 @@ void loop0() {
 
 }
 void loop() {
-  //read 3 pot values
   potA.readValue();
   sensorA.readValue();
-  Serial.println(potA.getValue());
   sensorA.setThresh(potA.getValue());
+  sensorA.updateState();
+  sensorA.displayState();
 }
