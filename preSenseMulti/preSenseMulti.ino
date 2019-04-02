@@ -81,11 +81,11 @@ class Sensor {
     bool getState() {
       return state;
     }
-    void blinkLed() {
+    void blinkOn() {
       digitalWrite(ledPin, HIGH);
-      delay(1000);
+    }
+    void blinkOff() {
       digitalWrite(ledPin, LOW);
-      delay(500);
     }
     void setThresh(int input) {
 
@@ -150,7 +150,23 @@ Pot potA(0);
 Pot potB(1);
 Pot potC(2);
 
+void blinkAlive() {
+
+  sensorA.blinkOn();
+  sensorB.blinkOn();
+  sensorC.blinkOn();
+  delay(1000);
+  sensorA.blinkOff();
+  sensorB.blinkOff();
+  sensorC.blinkOff();
+  delay(200);
+
+}
+
 void setup() {
+
+  blinkAlive();
+
   Serial.begin(9600);
 }
 
@@ -158,6 +174,7 @@ void loop() {
   routineA();
   routineB();
   routineC();
+  gport0.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
 }
 void routineA() {
   potA.readValue();
