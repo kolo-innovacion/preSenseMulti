@@ -18,6 +18,7 @@ class Pot {
     }
     void readValue() {
       value = analogRead(volPin);
+      value = map(value, 0, 1023, 20, 300);
       //Serial.println(value);
     }
 };
@@ -31,11 +32,11 @@ class Sensor {
     bool state;
 
   public:
-    Sensor(int po, int pu, int le, int th) {
+    Sensor(int po, int pu, int le) {
       powPin = po;
       pulPin = pu;
       ledPin = le;
-      thresh = th;
+      thresh = 0;
       value = 0;
       state = false;
 
@@ -43,6 +44,20 @@ class Sensor {
       pinMode(powPin, OUTPUT);
       pinMode(ledPin, OUTPUT);
     }
+
+    //
+    //    Sensor(int po, int pu, int le, int th) {
+    //      powPin = po;
+    //      pulPin = pu;
+    //      ledPin = le;
+    //      thresh = th;
+    //      value = 0;
+    //      state = false;
+    //
+    //      pinMode(pulPin, INPUT);
+    //      pinMode(powPin, OUTPUT);
+    //      pinMode(ledPin, OUTPUT);
+    //    }
 
     void readValue() {
       digitalWrite(powPin, HIGH);
@@ -55,7 +70,7 @@ class Sensor {
         value = 0;
       }
 
-      Serial.println(value);
+      //Serial.println(value);
 
       digitalWrite(powPin, LOW);
     }
@@ -75,6 +90,13 @@ class Sensor {
       digitalWrite(ledPin, LOW);
       delay(500);
     }
+    void setThresh(int input) {
+
+      thresh = input;
+    }
+    int getValue() {
+      return value;
+    }
 
 };
 
@@ -88,31 +110,27 @@ int gDelay = 500;
 class Gport
 {
     int pin;
-    int ledPin;
+    //int ledPin;
 
   public:
 
     void setNormal() {
       digitalWrite(pin, normal);
-      digitalWrite(ledPin, LOW);
+      //digitalWrite(ledPin, LOW);
     }
 
-    Gport(int gp, int lp) {
+    Gport(int gp) {
       pin = gp;
-      ledPin = lp;
+      //ledPin = 13;
 
       pinMode(pin, OUTPUT);
-      pinMode(ledPin, OUTPUT);
+      //pinMode(ledPin, OUTPUT);
       setNormal();
     }
-    void blinkOnce() {
-      digitalWrite(ledPin, HIGH);
-      delay(250);
-      digitalWrite(ledPin, LOW);
-    }
+
     void setActive() {
       digitalWrite(pin, active);
-      digitalWrite(ledPin, HIGH);
+      //digitalWrite(ledPin, HIGH);
       delay(gDelay);
     }
     void setOutput(bool input) {
@@ -128,12 +146,12 @@ class Gport
 };
 
 //sensor objects creation
-Sensor sensorA(11, 12, 13, threshA);
-Sensor sensorB(9, 10, 5, threshB);
-Sensor sensorC(7, 8, 4, threshC);
+Sensor sensorA(11, 12, 13);
+Sensor sensorB(9, 10, 5);
+Sensor sensorC(7, 8, 4);
 
 //BS GPIO port creation
-Gport gport0(12, 13);
+Gport gport0(2);
 
 //Pot objects creation
 Pot potA(0);
@@ -159,10 +177,7 @@ void loop0() {
 void loop() {
   //read 3 pot values
   potA.readValue();
-  potB.readValue();
-  potC.readValue();
-
   sensorA.readValue();
-
-  sensorA.updateState();
+  Serial.println(potA.getValue());
+  sensorA.setThresh(potA.getValue());
 }
