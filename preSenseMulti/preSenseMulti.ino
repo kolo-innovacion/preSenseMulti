@@ -143,7 +143,11 @@ Sensor sensorB(9, 10, 5);
 Sensor sensorC(7, 8, 4);
 
 //BS GPIO port creation
-Gport gport0(2);
+Gport gport2(2);
+Gport gport3(3);
+Gport gport4(4);
+Gport gport5(5);
+Gport gport6(6);
 
 //Pot objects creation
 Pot potA(0);
@@ -174,7 +178,7 @@ void loop() {
   routineA();
   routineB();
   routineC();
-  gport0.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
+  //gport2.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
 }
 void routineA() {
   potA.readValue();
@@ -198,4 +202,14 @@ void routineC() {
   sensorC.setThresh(potC.getValue());
   sensorC.updateState();
   sensorC.displayState();
+}
+
+void read3(bool inputA, bool inputB, bool inputC) {
+  if (inputA && inputB && (inputC == false)) {
+    gport3.setOutput(true);
+  }
+  else if (inputB && inputC && (inputA == false)) {
+    gport5.setOutput(true);
+  }
+
 }
