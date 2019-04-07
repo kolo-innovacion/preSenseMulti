@@ -35,10 +35,10 @@ class Sensor {
 
   public:
 
-    Sensor(int po, int pu, int le) {
+    Sensor(int po, int pu) {
       powPin = po;
       pulPin = pu;
-      ledPin = le;
+      //ledPin = le;
       thresh = 0;
       value = 0;
       state = false;
@@ -83,14 +83,6 @@ class Sensor {
       swapState();
     }
     //after this update, safe value must be evaluated
-    void displayState() {
-      if (state) {
-        digitalWrite(ledPin, HIGH);
-      } else {
-        digitalWrite(ledPin, LOW);
-      }
-    }
-
     bool getState() {
       return state;
     }
@@ -164,9 +156,9 @@ class Gport
 };
 
 //sensor objects creation
-Sensor sensorA(11, 12, 13);
-Sensor sensorB(9, 10, 5);
-Sensor sensorC(7, 8, 4);
+Sensor sensorA(11, 12);
+Sensor sensorB(9, 10);
+Sensor sensorC(7, 8);
 
 //BS GPIO port creation
 Gport gport2(2);
@@ -198,7 +190,7 @@ void routineA() {
   sensorA.readValue();
   sensorA.setThresh(potA.getValue());
   sensorA.updateState();
-  sensorA.displayState();
+  //sensorA.displayState();
 }
 //B
 void routineB() {
@@ -206,7 +198,7 @@ void routineB() {
   sensorB.readValue();
   sensorB.setThresh(potB.getValue());
   sensorB.updateState();
-  sensorB.displayState();
+  //sensorB.displayState();
 }
 //C
 void routineC() {
@@ -214,7 +206,7 @@ void routineC() {
   sensorC.readValue();
   sensorC.setThresh(potC.getValue());
   sensorC.updateState();
-  sensorC.displayState();
+  //sensorC.displayState();
 }
 
 int checkZone(bool inputA, bool inputB, bool inputC) {
