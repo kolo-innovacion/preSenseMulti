@@ -26,7 +26,6 @@ class Pot {
 class Sensor {
     int powPin;
     int pulPin;
-    int ledPin;
     int thresh;
     int value;
     bool state;
@@ -38,7 +37,6 @@ class Sensor {
     Sensor(int po, int pu) {
       powPin = po;
       pulPin = pu;
-      //ledPin = le;
       thresh = 0;
       value = 0;
       state = false;
@@ -48,7 +46,6 @@ class Sensor {
 
       pinMode(pulPin, INPUT);
       pinMode(powPin, OUTPUT);
-      pinMode(ledPin, OUTPUT);
     }
 
     void readValue() {
@@ -183,7 +180,8 @@ void loop() {
   routineA();
   routineB();
   routineC();
-  //gport2.setOutput(sensorA.getState() || sensorB.getState() || sensorC.getState());
+
+  outputZone(checkZone(sensorA.getSafe(), sensorB.getSafe(), sensorC.getSafe()));
 }
 void routineA() {
   potA.readValue();
@@ -231,30 +229,37 @@ int checkZone(bool inputA, bool inputB, bool inputC) {
     return 7;
   }
 }
-void switchZone(int input) {
+void outputZone(int input) {
   switch (input) {
+
     case 0:
       //from sensorA
       gport2.enable();
       break;
+
     case 1:
       //from sensorB
       gport4.enable();
       break;
+
     case 2:
       //from sensorC
       gport6.enable();
       break;
+
     case 10:
       //from sensorA+B
       gport3.enable();
       break;
+
     case 12:
       //from sensorB+C
       gport5.enable();
       break;
+
     default:
-      //from sensorA
+      //no sensor or 3 at a time
+      //donthn
       break;
   }
 }
