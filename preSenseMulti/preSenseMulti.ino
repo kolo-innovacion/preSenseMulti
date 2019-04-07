@@ -32,7 +32,9 @@ class Sensor {
     bool state;
     bool prev;
     bool safe;
+
   public:
+
     Sensor(int po, int pu, int le) {
       powPin = po;
       pulPin = pu;
@@ -100,12 +102,6 @@ class Sensor {
     }
     void swapState() {
       prev = state;
-    }
-    void blinkOn() {
-      digitalWrite(ledPin, HIGH);
-    }
-    void blinkOff() {
-      digitalWrite(ledPin, LOW);
     }
     void setThresh(int input) {
 
@@ -184,22 +180,9 @@ Pot potA(0);
 Pot potB(1);
 Pot potC(2);
 
-void blinkAlive() {
-
-  sensorA.blinkOn();
-  sensorB.blinkOn();
-  sensorC.blinkOn();
-  delay(1000);
-  sensorA.blinkOff();
-  sensorB.blinkOff();
-  sensorC.blinkOff();
-  delay(200);
-
-}
-
 void setup() {
 
-  blinkAlive();
+  //blinkAlive();
 
   Serial.begin(9600);
 }
@@ -259,22 +242,27 @@ int checkZone(bool inputA, bool inputB, bool inputC) {
 void switchZone(int input) {
   switch (input) {
     case 0:
-      //action
+      //from sensorA
+      gport2.enable();
       break;
     case 1:
-      //action
+      //from sensorB
+      gport4.enable();
       break;
     case 2:
-      //action
+      //from sensorC
+      gport6.enable();
       break;
     case 10:
-      //action
+      //from sensorA+B
+      gport3.enable();
       break;
     case 12:
-      //action
+      //from sensorB+C
+      gport5.enable();
       break;
     default:
-      //action
+      //from sensorA
       break;
   }
 }
