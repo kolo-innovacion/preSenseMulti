@@ -30,7 +30,8 @@ class Sensor {
     int thresh;
     int value;
     bool state;
-
+    bool prev;
+    bool safe;
   public:
     Sensor(int po, int pu, int le) {
       powPin = po;
@@ -39,6 +40,9 @@ class Sensor {
       thresh = 0;
       value = 0;
       state = false;
+      prev = false;
+      safe = false;
+
 
       pinMode(pulPin, INPUT);
       pinMode(powPin, OUTPUT);
@@ -69,7 +73,14 @@ class Sensor {
       } else {
         state = false;
       }
+      if (state && prev) {
+        safe = true;
+      } else {
+        safe = false;
+      }
+      swapState();
     }
+    //after this update, safe value must be evaluated
     void displayState() {
       if (state) {
         digitalWrite(ledPin, HIGH);
@@ -80,6 +91,15 @@ class Sensor {
 
     bool getState() {
       return state;
+    }
+    bool getPrev() {
+      return prev;
+    }
+    bool getSafe() {
+      return safe;
+    }
+    void swapState() {
+      prev = state;
     }
     void blinkOn() {
       digitalWrite(ledPin, HIGH);
@@ -96,6 +116,11 @@ class Sensor {
     }
 
 };
+//zone class definition:
+class Zone {
+
+};
+
 
 //Brightsign gpio class definition:
 
@@ -133,6 +158,11 @@ class Gport
       } else {
         setNormal();
       }
+    }
+    void enable() {
+      //in case Ball has been punched, Brightsign active value is set
+      setActive();
+      setNormal();
     }
 
 };
@@ -204,12 +234,47 @@ void routineC() {
   sensorC.displayState();
 }
 
-void read3(bool inputA, bool inputB, bool inputC) {
+int checkZone(bool inputA, bool inputB, bool inputC) {
   if (inputA && inputB && (inputC == false)) {
-    gport3.setOutput(true);
+    //zones 0+1=zone 10;
+    return 10;
   }
   else if (inputB && inputC && (inputA == false)) {
-    gport5.setOutput(true);
+    //zones 1+2=12
+    return 12;
   }
-
+  else if (inputA && (inputB == false) && (inputC == false)) {
+    return 0;
+  }
+  else if (inputB && (inputC == false) && (inputA == false)) {
+    return 1;
+  }
+  else if (inputC && (inputA == false) && (inputB == false)) {
+    return 2;
+  }
+  else {
+    return 7;
+  }
+}
+void switchZone(int input) {
+  switch (input) {
+    case 0:
+      //action
+      break;
+    case 1:
+      //action
+      break;
+    case 2:
+      //action
+      break;
+    case 10:
+      //action
+      break;
+    case 12:
+      //action
+      break;
+    default:
+      //action
+      break;
+  }
 }
