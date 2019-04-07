@@ -72,11 +72,13 @@ class Sensor {
       } else {
         state = false;
       }
+      
       if (state && prev) {
         safe = true;
       } else {
         safe = false;
       }
+      
       swapState();
     }
     //after this update, safe value must be evaluated
